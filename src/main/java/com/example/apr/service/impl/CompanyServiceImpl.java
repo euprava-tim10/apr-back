@@ -10,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -20,8 +21,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<CompanyDto> findAll() {
+    public List<CompanyDto> findAll(String search) {
+
         List<Company> allCompany = companyRepository.findAll();
+
+
         List<CompanyDto> all = new ArrayList<>();
         for (Company c : allCompany) {
             all.add(CompanyDto.builder()
@@ -33,10 +37,17 @@ public class CompanyServiceImpl implements CompanyService {
                     .status(c.getStatus())
                     .build());
         }
+        if (search != null) {
+            return all.stream().
+                    filter(c -> c.getName().toUpperCase().contains(search.toUpperCase()) ||
+                            c.getRegistrationNumber().contains(search))
+                    .collect(Collectors.toList());
+        }
         return all;
     }
 
-    public CompanyDto findById(Long id){
+
+    public CompanyDto findById(Long id) {
         Optional<Company> companyOpt = companyRepository.findById(id);
         if (companyOpt.isEmpty()) {
             throw new EntityNotFoundException("There is no commpany with id: " + id);
