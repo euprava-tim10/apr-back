@@ -25,7 +25,7 @@ public class JwtTokenUtil {
                 .firstName((String) claims.get("firstName"))
                 .lastName((String) claims.get("lastName"))
                 .role((String) claims.get("role"))
-                .companyId(((Number) claims.getOrDefault("companyId", 0)).longValue())
+                .companyId(((Number) claims.getOrDefault("companyId", 1)).longValue())
                 .build();
     }
 

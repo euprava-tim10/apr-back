@@ -3,6 +3,7 @@ package com.example.apr.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,6 +33,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/jobAdvertisements").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/jobAdvertisements/{id}").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/jobAdvertisements/{id}/{username}").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/notifications/{username}").permitAll()
                 .anyRequest().permitAll();
 
         httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

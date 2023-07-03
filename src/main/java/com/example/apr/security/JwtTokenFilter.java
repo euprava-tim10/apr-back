@@ -28,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
             throws ServletException, IOException {
         final String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (isEmpty(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            chain.doFilter(request, response);
             return;
         }
 

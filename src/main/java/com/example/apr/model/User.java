@@ -2,9 +2,7 @@ package com.example.apr.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -18,6 +16,8 @@ import static javax.persistence.InheritanceType.SINGLE_TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = SINGLE_TABLE)
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +38,6 @@ public class User {
     @Column
     private String password;
 
-    @Column
-    private String jmbg;
 
     @Enumerated(EnumType.STRING)
     @Column

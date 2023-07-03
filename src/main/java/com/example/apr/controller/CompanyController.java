@@ -1,14 +1,14 @@
 package com.example.apr.controller;
 
 import com.example.apr.dto.CompanyDto;
+import com.example.apr.dto.CreateCompanyDto;
 import com.example.apr.service.CompanyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/companies")
@@ -40,5 +40,18 @@ public class CompanyController {
         return new ResponseEntity<>(companyDto, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<CompanyDto> registerCompany(@RequestBody @Validated CreateCompanyDto newCompany) {
+
+
+        CompanyDto created = companyService.createCompany(newCompany);
+
+        if (created == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+
+    }
 }
 

@@ -1,8 +1,7 @@
 package com.example.apr.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,6 +12,8 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class JobAdvertisement {
 
     @Id
@@ -33,7 +34,9 @@ public class JobAdvertisement {
     @Column
     private Profession profession;
 
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Company company;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
@@ -44,5 +47,6 @@ public class JobAdvertisement {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "jobAdvetrisement_id")
     )
+    @JsonIgnore
     private Set<User> candidates = new HashSet<>();
 }
