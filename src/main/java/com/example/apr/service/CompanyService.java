@@ -9,6 +9,8 @@ import java.util.List;
 public interface CompanyService {
     List<CompanyDto> findAll(String search);
 
+    CompanyDto findByUser();
+
     CompanyDto findById(Long id);
 
     CompanyDto createCompany(CreateCompanyDto createCompanyDto);

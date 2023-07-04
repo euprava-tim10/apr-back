@@ -30,12 +30,14 @@ public class UserServiceImpl implements UserService {
         User user = userOpt.get();
 
         return UserDTO.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .education(user.getEducation())
                 .profession(user.getProfession())
                 .companyId(user.getCompany().getId())
+                .role(user.getRole())
                 .build();
     }
 }

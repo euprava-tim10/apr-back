@@ -19,13 +19,15 @@ public class JwtTokenUtil {
                 .parseClaimsJws(token)
                 .getBody();
 
+        Object companyId = claims.getOrDefault("companyId", -1);
+
         return AuthUser.builder()
 //                .id(((Number) claims.get("id")).longValue())
                 .username((String) claims.get("username"))
                 .firstName((String) claims.get("firstName"))
                 .lastName((String) claims.get("lastName"))
                 .role((String) claims.get("role"))
-                .companyId(((Number) claims.getOrDefault("companyId", 1)).longValue())
+                .companyId(companyId == null ? -1 : (Integer) companyId)
                 .build();
     }
 

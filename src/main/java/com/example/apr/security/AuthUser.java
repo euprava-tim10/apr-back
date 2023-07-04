@@ -14,6 +14,6 @@ public class AuthUser {
     private String firstName;
     private String lastName;
     private String role;
-    private long companyId;
+    private int companyId;
 
 }

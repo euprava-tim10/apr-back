@@ -40,7 +40,17 @@ public class CompanyController {
         return new ResponseEntity<>(companyDto, HttpStatus.OK);
     }
 
-    @PostMapping
+    @GetMapping("/userCompany")
+    public ResponseEntity<CompanyDto> getUserCompany() {
+        CompanyDto companyDto = companyService.findByUser();
+
+        if (companyDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(companyDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
     public ResponseEntity<CompanyDto> registerCompany(@RequestBody @Validated CreateCompanyDto newCompany) {
 
 

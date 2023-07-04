@@ -4,6 +4,8 @@ import com.example.apr.model.Education;
 import com.example.apr.model.Profession;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,11 +13,14 @@ import lombok.*;
 @Builder
 public class UserDTO {
 
+    private Long id;
     private String username;
 
     private String firstName;
 
     private String lastName;
+
+    private String role;
 
     private Education education;
 
@@ -23,5 +28,6 @@ public class UserDTO {
 
     private Long companyId;
 
+    private List<UserDTO> employee;
 
 }

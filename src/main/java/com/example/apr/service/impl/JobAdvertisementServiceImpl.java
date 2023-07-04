@@ -80,6 +80,7 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
 
 
         return JobAdvertisementDto.builder()
+                .id(saved.getId())
                 .users(saved.getCandidates())
                 .profession(saved.getProfession())
                 .neededEducation(saved.getNeededEducation())
@@ -114,6 +115,7 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
         List<JobAdvertisementDto> all = new ArrayList<>();
         for (JobAdvertisement jobAdvertisement : allJobAdvertisement) {
             all.add(JobAdvertisementDto.builder()
+                    .id(jobAdvertisement.getId())
                     .company(new CompanyDto(jobAdvertisement.getCompany().getName(),
                             jobAdvertisement.getCompany().getPio(),
                             jobAdvertisement.getCompany().getPib(),
@@ -153,8 +155,8 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
             throw new BadRequestException("There is no user ");
         }
         User user = firstByUsername.get();
-        Notification firstByJobAlertAndUser = notificationRepository.findFirstByJobAlertAndUser(jobAdvertisement, user);
-        if (firstByJobAlertAndUser != null) {
+        Optional<Notification> firstByJobAlertIdAndUserId = notificationRepository.findFirstByJobAlertIdAndUserId(jobAdvertisement.getId(), user.getId());
+        if (firstByJobAlertIdAndUserId.isPresent()) {
             return jobAdvertisement;
         }
         Set<User> candidates = jobAdvertisement.getCandidates();
