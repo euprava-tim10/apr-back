@@ -7,7 +7,7 @@ import com.example.apr.dto.CreateCompanyDto;
 import java.util.List;
 
 public interface CompanyService {
-    List<CompanyDto> findAll(String search);
+    List<CompanyDto> findAll(String search, String criteria);
 
     CompanyDto findByUser();
 

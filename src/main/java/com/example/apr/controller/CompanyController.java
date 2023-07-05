@@ -21,11 +21,9 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyDto>> getAll(@RequestParam(value = "search", required = false) String search) {
-        List<CompanyDto> all = companyService.findAll(search);
-
-
-
+    public ResponseEntity<List<CompanyDto>> getAll(@RequestParam(value = "search", required = false) String search,
+                                                   @RequestParam(value = "criteria", required = false) String criteria) {
+        List<CompanyDto> all = companyService.findAll(search, criteria);
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 

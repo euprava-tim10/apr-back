@@ -4,11 +4,9 @@ import com.example.apr.dto.CompanyDto;
 import com.example.apr.dto.CreateCompanyDto;
 import com.example.apr.exception.BadRequestException;
 import com.example.apr.model.Company;
-import com.example.apr.model.Notification;
 import com.example.apr.model.Status;
 import com.example.apr.model.User;
 import com.example.apr.repository.CompanyRepository;
-import com.example.apr.repository.NotificationRepository;
 import com.example.apr.repository.UserRepository;
 import com.example.apr.security.AuthHelper;
 import com.example.apr.service.CompanyService;
@@ -26,26 +24,19 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
-    private final NotificationRepository notificationRepository;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository, UserRepository userRepository, NotificationRepository notificationRepository) {
+    public CompanyServiceImpl(CompanyRepository companyRepository, UserRepository userRepository) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
-        this.notificationRepository = notificationRepository;
     }
 
     @Override
-    public List<CompanyDto> findAll(String search) {
-
-        Optional<Notification> notificationOpt = notificationRepository.findFirstByJobAlertIdAndUserId(1L, 3L);
-
-
+    public List<CompanyDto> findAll(String search, String criteria) {
         List<Company> allCompany = companyRepository.findAll();
-
-
         List<CompanyDto> all = new ArrayList<>();
         for (Company c : allCompany) {
             all.add(CompanyDto.builder()
+                    .id(c.getId())
                     .name(c.getName())
                     .PIB(c.getPib())
                     .PIO(c.getPio())
@@ -55,13 +46,23 @@ public class CompanyServiceImpl implements CompanyService {
                     .employee(c.getEmployee())
                     .build());
         }
-        if (search != null) {
+        if (criteria == null || search == null) {
+            return all;
+        }
+        String[] criterias = criteria.split(",");
+        if (criterias.length > 1) {
             return all.stream().
                     filter(c -> c.getName().toUpperCase().contains(search.toUpperCase()) ||
                             c.getRegistrationNumber().contains(search))
                     .collect(Collectors.toList());
+        } else if (criterias[0].equals("name")) {
+            return all.stream().
+                    filter(c -> c.getName().toUpperCase().contains(search.toUpperCase()))
+                    .collect(Collectors.toList());
         }
-        return all;
+        return all.stream().
+                filter(c -> c.getRegistrationNumber().contains(search))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -72,6 +73,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
         User user = userOpt.get();
         return CompanyDto.builder()
+                .id(user.getCompany().getId())
                 .status(user.getCompany().getStatus())
                 .name(user.getCompany().getName())
                 .registrationNumber(user.getCompany().getRegistrationNumber())
@@ -92,6 +94,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
         return CompanyDto.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .PIO(company.getPio())
                 .PIB(company.getPib())
@@ -124,6 +127,7 @@ public class CompanyServiceImpl implements CompanyService {
         user.setCompany(saved);
         userRepository.save(user);
         return CompanyDto.builder()
+                .id(saved.getId())
                 .name(saved.getName())
                 .employee(saved.getEmployee())
                 .PIB(saved.getPib())

@@ -13,14 +13,12 @@ import com.example.apr.repository.NotificationRepository;
 import com.example.apr.repository.UserRepository;
 import com.example.apr.service.JobAdvertisementService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
 
 
 @Service
-@Transactional
 public class JobAdvertisementServiceImpl implements JobAdvertisementService {
     private final JobAdvertisementRepository jobAdvertisementRepository;
     private final UserRepository userRepository;
@@ -40,14 +38,16 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
         List<JobAdvertisementDto> all = new ArrayList<>();
         for (JobAdvertisement jobAdvertisement : allJobAdvertisement) {
             all.add(JobAdvertisementDto.builder()
-                    .company(new CompanyDto(jobAdvertisement.getCompany().getName(),
-                            jobAdvertisement.getCompany().getPio(),
-                            jobAdvertisement.getCompany().getPib(),
-                            jobAdvertisement.getCompany().getRegistrationNumber(),
-                            jobAdvertisement.getCompany().getRegistrationDate(),
-                            jobAdvertisement.getCompany().getStatus(),
-                            jobAdvertisement.getCompany().getEmployee()
-                    ))
+                    .company(CompanyDto.builder()
+                            .id(jobAdvertisement.getCompany().getId())
+                            .name(jobAdvertisement.getCompany().getName())
+                            .employee(jobAdvertisement.getCompany().getEmployee())
+                            .PIB(jobAdvertisement.getCompany().getPib())
+                            .PIO(jobAdvertisement.getCompany().getPio())
+                            .status(jobAdvertisement.getCompany().getStatus())
+                            .registrationDate(jobAdvertisement.getCompany().getRegistrationDate())
+                            .registrationNumber(jobAdvertisement.getCompany().getRegistrationNumber())
+                            .build())
                     .startDate(jobAdvertisement.getStartDate())
                     .endDate(jobAdvertisement.getEndDate())
                     .neededEducation(jobAdvertisement.getNeededEducation())
@@ -66,7 +66,9 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
             throw new BadRequestException("There is no user with username: " + username);
         }
         User user = userOpt.get();
-
+        if (user.getCompany() == null) {
+            return null;
+        }
 
         JobAdvertisement saved = jobAdvertisementRepository.save(
                 JobAdvertisement.builder()
@@ -85,14 +87,16 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
                 .profession(saved.getProfession())
                 .neededEducation(saved.getNeededEducation())
                 .endDate(saved.getEndDate())
-                .company(new CompanyDto(saved.getCompany().getName(),
-                        saved.getCompany().getPio(),
-                        saved.getCompany().getPib(),
-                        saved.getCompany().getRegistrationNumber(),
-                        saved.getCompany().getRegistrationDate(),
-                        saved.getCompany().getStatus(),
-                        saved.getCompany().getEmployee()
-                ))
+                .company(CompanyDto.builder()
+                        .id(saved.getCompany().getId())
+                        .name(saved.getCompany().getName())
+                        .employee(saved.getCompany().getEmployee())
+                        .PIB(saved.getCompany().getPib())
+                        .PIO(saved.getCompany().getPio())
+                        .status(saved.getCompany().getStatus())
+                        .registrationDate(saved.getCompany().getRegistrationDate())
+                        .registrationNumber(saved.getCompany().getRegistrationNumber())
+                        .build())
                 .startDate(saved.getStartDate())
                 .build();
     }
@@ -116,14 +120,16 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
         for (JobAdvertisement jobAdvertisement : allJobAdvertisement) {
             all.add(JobAdvertisementDto.builder()
                     .id(jobAdvertisement.getId())
-                    .company(new CompanyDto(jobAdvertisement.getCompany().getName(),
-                            jobAdvertisement.getCompany().getPio(),
-                            jobAdvertisement.getCompany().getPib(),
-                            jobAdvertisement.getCompany().getRegistrationNumber(),
-                            jobAdvertisement.getCompany().getRegistrationDate(),
-                            jobAdvertisement.getCompany().getStatus(),
-                            jobAdvertisement.getCompany().getEmployee()
-                    ))
+                    .company(CompanyDto.builder()
+                            .id(jobAdvertisement.getCompany().getId())
+                            .name(jobAdvertisement.getCompany().getName())
+                            .employee(jobAdvertisement.getCompany().getEmployee())
+                            .PIB(jobAdvertisement.getCompany().getPib())
+                            .PIO(jobAdvertisement.getCompany().getPio())
+                            .status(jobAdvertisement.getCompany().getStatus())
+                            .registrationDate(jobAdvertisement.getCompany().getRegistrationDate())
+                            .registrationNumber(jobAdvertisement.getCompany().getRegistrationNumber())
+                            .build())
                     .startDate(jobAdvertisement.getStartDate())
                     .endDate(jobAdvertisement.getEndDate())
                     .neededEducation(jobAdvertisement.getNeededEducation())
@@ -136,13 +142,12 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
 
     @Override
     public JobAdvertisement findById(Long id) {
-        Optional<JobAdvertisement> byId = jobAdvertisementRepository.findById(id);
-        if (byId.isEmpty()) {
+        Optional<JobAdvertisement> jobAdvertisementById = jobAdvertisementRepository.findById(id);
+        if (jobAdvertisementById.isEmpty()) {
             throw new BadRequestException("There is no job advertisement with id: " + id);
         }
-        JobAdvertisement jobAdvertisement = byId.get();
 
-        return jobAdvertisement;
+        return jobAdvertisementById.get();
     }
 
     @Override
