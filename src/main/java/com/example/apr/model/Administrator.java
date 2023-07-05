@@ -10,8 +10,8 @@ import java.util.Set;
 public class Administrator extends User {
 
 
-    public Administrator(Long id, String username, String firstName, String lastName, String role, String password, Education education,
+    public Administrator(Long id, String username, String firstName, String lastName, String role, Education education,
                          Profession profession, Company company, Set<JobAdvertisement> jobAdvertisements) {
-        super(id, username, firstName, lastName, role, password, education, profession, company, jobAdvertisements);
+        super(id, username, firstName, lastName, role, education, profession, company, jobAdvertisements);
     }
 }

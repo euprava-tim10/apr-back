@@ -9,7 +9,7 @@ import java.util.List;
 public interface JobAdvertisementService {
     List<JobAdvertisementDto> findAll();
 
-    JobAdvertisementDto createJobAdvertisement(CreateJobAdvertisement createJobAdvertisement, String username);
+    Boolean createJobAdvertisement(CreateJobAdvertisement createJobAdvertisement, String username);
 
     List<JobAdvertisementDto> findAllCompanyJobAdvertisements(String username);
 

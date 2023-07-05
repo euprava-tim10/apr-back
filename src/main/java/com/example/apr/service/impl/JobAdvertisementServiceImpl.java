@@ -4,10 +4,7 @@ import com.example.apr.dto.CompanyDto;
 import com.example.apr.dto.CreateJobAdvertisement;
 import com.example.apr.dto.JobAdvertisementDto;
 import com.example.apr.exception.BadRequestException;
-import com.example.apr.model.JobAdvertisement;
-import com.example.apr.model.Notification;
-import com.example.apr.model.NotificationStatus;
-import com.example.apr.model.User;
+import com.example.apr.model.*;
 import com.example.apr.repository.JobAdvertisementRepository;
 import com.example.apr.repository.NotificationRepository;
 import com.example.apr.repository.UserRepository;
@@ -60,17 +57,21 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
     }
 
     @Override
-    public JobAdvertisementDto createJobAdvertisement(CreateJobAdvertisement createJobAdvertisement, String username) {
+    public Boolean createJobAdvertisement(CreateJobAdvertisement createJobAdvertisement, String username) {
         Optional<User> userOpt = userRepository.findFirstByUsername(username);
         if (userOpt.isEmpty()) {
             throw new BadRequestException("There is no user with username: " + username);
         }
         User user = userOpt.get();
         if (user.getCompany() == null) {
-            return null;
+            throw new BadRequestException("There is no company: ");
+        }
+        if (!user.getCompany().getStatus().equals(Status.ACTIVE)) {
+            return false;
+
         }
 
-        JobAdvertisement saved = jobAdvertisementRepository.save(
+        jobAdvertisementRepository.save(
                 JobAdvertisement.builder()
                         .company(user.getCompany())
                         .startDate(LocalDate.now())
@@ -81,24 +82,7 @@ public class JobAdvertisementServiceImpl implements JobAdvertisementService {
                         .build());
 
 
-        return JobAdvertisementDto.builder()
-                .id(saved.getId())
-                .users(saved.getCandidates())
-                .profession(saved.getProfession())
-                .neededEducation(saved.getNeededEducation())
-                .endDate(saved.getEndDate())
-                .company(CompanyDto.builder()
-                        .id(saved.getCompany().getId())
-                        .name(saved.getCompany().getName())
-                        .employee(saved.getCompany().getEmployee())
-                        .PIB(saved.getCompany().getPib())
-                        .PIO(saved.getCompany().getPio())
-                        .status(saved.getCompany().getStatus())
-                        .registrationDate(saved.getCompany().getRegistrationDate())
-                        .registrationNumber(saved.getCompany().getRegistrationNumber())
-                        .build())
-                .startDate(saved.getStartDate())
-                .build();
+        return true;
     }
 
 

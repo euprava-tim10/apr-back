@@ -52,16 +52,16 @@ public class JobAdvertisementController {
     }
 
     @PostMapping
-    public ResponseEntity<JobAdvertisementDto> createJobAdvertisement(@RequestBody @Validated CreateJobAdvertisement newJobAdvertisement) {
+    public ResponseEntity<Boolean> createJobAdvertisement(@RequestBody @Validated CreateJobAdvertisement newJobAdvertisement) {
 
 
-        JobAdvertisementDto created = jobAdvertisementService.createJobAdvertisement(newJobAdvertisement, AuthHelper.authUser().getUsername());
+        Boolean created = jobAdvertisementService.createJobAdvertisement(newJobAdvertisement, AuthHelper.authUser().getUsername());
 
-        if (created == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        if (!created) {
+            return new ResponseEntity<>(false, HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
 
     }
 

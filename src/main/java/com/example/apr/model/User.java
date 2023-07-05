@@ -35,9 +35,6 @@ public class User {
     @Column
     private String role;
 
-    @Column
-    private String password;
-
 
     @Enumerated(EnumType.STRING)
     @Column
